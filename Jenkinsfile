@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "YOUR_DOCKERHUB_USERNAME/aceest-fitness"
+        DOCKER_IMAGE = "kulkarnimrudula3/aceest-fitness"
         IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
@@ -15,46 +15,45 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                bat 'python -m pip install --upgrade pip'
-                bat 'pip install -r app/requirements.txt'
+                bat 'py -m pip install --upgrade pip'
+                bat 'py -m pip install -r requirements.txt'
             }
         }
 
         stage('Run Pytest') {
             steps {
-                bat 'pytest tests --cov=app --cov-report=xml'
+                bat 'py -m pytest'
             }
         }
-
         stage('SonarQube Analysis') {
             steps {
-                echo 'Configure SonarQube server in Jenkins as SonarQubeServer'
+                echo 'Running SonarQube analysis'
                 withSonarQubeEnv('SonarQubeServer') {
-                    bat 'sonar-scanner'
+                bat 'sonar-scanner'
                 }
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t $DOCKER_IMAGE:$IMAGE_TAG -t $DOCKER_IMAGE:latest .'
+                bat "docker build -t %DOCKER_IMAGE%:%IMAGE_TAG% -t %DOCKER_IMAGE%:latest ."
             }
         }
 
-        stage('push Docker Image') {
+        stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    bat 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
-                    bat 'docker push $DOCKER_IMAGE:$IMAGE_TAG'
-                    bat 'docker push $DOCKER_IMAGE:latest'
+                    bat "echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin"
+                    bat "docker push %DOCKER_IMAGE%:%IMAGE_TAG%"
+                    bat "docker push %DOCKER_IMAGE%:latest"
                 }
             }
         }
 
         stage('Deploy to Kubernetes') {
             steps {
-                bat 'kubectl apply -f k8s/rolling-deployment.yaml'
-                bat 'kubectl apply -f k8s/service.yaml'
+                bat "kubectl apply -f k8s/rolling-deployment.yaml"
+                bat "kubectl apply -f k8s/service.yaml"
             }
         }
     }
