@@ -27,13 +27,16 @@ pipeline {
             }
         }
         stage('SonarQube Analysis') {
-            steps {
-                echo 'Running SonarQube analysis'
-                withSonarQubeEnv('SonarQubeServer') {
-                bat 'sonar-scanner'
-                }
+    steps {
+        echo 'Running SonarQube analysis'
+        withSonarQubeEnv('SonarQubeServer') {
+            script {
+                def scannerHome = tool 'SonarScanner'
+                bat "\"${scannerHome}\\bin\\sonar-scanner\""
             }
         }
+    }
+}
 
         stage('Build Docker Image') {
             steps {
