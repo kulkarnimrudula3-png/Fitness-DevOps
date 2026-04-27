@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-         PYTHON_EXE = "C:\\Users\\DELL\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe"
         DOCKER_IMAGE = "kulkarnimrudula3/aceest-fitness"
         IMAGE_TAG = "${BUILD_NUMBER}"
     }
@@ -16,14 +15,14 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                bat '"%PYTHON_EXE%" -m pip install --upgrade pip'
-                bat '"%PYTHON_EXE%" -m pip install -r requirements.txt'
+               bat 'py -3.12 -m pip install --upgrade pip'
+               bat 'py -3.12 -m pip install -r requirements.txt'
             }
         }
 
         stage('Run Pytest') {
             steps {
-               bat '"%PYTHON_EXE%" -m pytest'
+               bat 'py -3.12 -m pytest'
             }
         }
         stage('SonarQube Analysis') {
