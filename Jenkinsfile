@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-         PYTHON_EXE = "PYTHON_EXE = "C:\\Users\\DELL\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe"
+         PYTHON_EXE = "C:\\Users\\DELL\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe"
         DOCKER_IMAGE = "kulkarnimrudula3/aceest-fitness"
         IMAGE_TAG = "${BUILD_NUMBER}"
     }
