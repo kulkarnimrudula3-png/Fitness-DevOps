@@ -27,16 +27,22 @@ pipeline {
             }
         }
         stage('SonarQube Analysis') {
-    steps {
-        echo 'Running SonarQube analysis'
-        withSonarQubeEnv('SonarQubeServer') {
-            script {
-                def scannerHome = tool 'SonarScanner'
-                bat "\"${scannerHome}\\bin\\sonar-scanner\""
+            steps {
+                echo 'Running SonarQube analysis'
+                withSonarQubeEnv('SonarQubeServer') {
+                    script {
+                        def scannerHome = tool 'SonarScanner'
+                        bat """
+                        "${scannerHome}\\bin\\sonar-scanner" ^
+                        -Dsonar.projectKey=fitness-app ^
+                        -Dsonar.sources=. ^
+                        -Dsonar.host.url=http://localhost:9000 ^
+                        -Dsonar.login=%SONAR_AUTH_TOKEN%
+                        """
+                    }
+                }
             }
         }
-    }
-}
 
         stage('Build Docker Image') {
             steps {
