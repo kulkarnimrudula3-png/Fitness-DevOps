@@ -41,12 +41,12 @@ pipeline {
             }
         }
 
-        stage('Pubat Docker Image') {
+        stage('push Docker Image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     bat 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
-                    bat 'docker pubat $DOCKER_IMAGE:$IMAGE_TAG'
-                    bat 'docker pubat $DOCKER_IMAGE:latest'
+                    bat 'docker push $DOCKER_IMAGE:$IMAGE_TAG'
+                    bat 'docker push $DOCKER_IMAGE:latest'
                 }
             }
         }
