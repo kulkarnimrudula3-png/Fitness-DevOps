@@ -30,7 +30,7 @@ def test_get_members():
 
 def test_add_member_success():
     client = app.test_client()
-    response = client.post("/members", json={"name": "Megha", "plan": "Gold", "trainer": "Riya"})
+    response = client.post("/members", json={"name": "Neha", "plan": "Gold", "trainer": "Riya"})
     assert response.status_code == 201
     assert response.get_json()["name"] == "Neha"
 
